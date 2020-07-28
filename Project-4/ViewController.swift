@@ -28,6 +28,9 @@ class ViewController: UIViewController, WKNavigationDelegate {
         
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(webView.reload))
+        let forward = UIBarButtonItem(title: "forward", style: .plain, target: webView, action: #selector(webView.goForward))
+        let goBack = UIBarButtonItem(title: "Back", style: .plain, target: webView, action: #selector(webView.goBack))
+        
         
         progressView = UIProgressView(progressViewStyle: .default)
         progressView.sizeToFit()
@@ -35,7 +38,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
         progressView.trackTintColor = UIColor.black
         let progressButton = UIBarButtonItem(customView: progressView)
 
-        toolbarItems = [progressButton, spacer, refresh]
+        toolbarItems = [progressButton, spacer, goBack, forward,  refresh]
         navigationController?.isToolbarHidden = false
         
         webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
@@ -71,6 +74,12 @@ class ViewController: UIViewController, WKNavigationDelegate {
             progressView.progress = Float(webView.estimatedProgress)
         }
     }
+    func simpeAlert(){
+        let alert = UIAlertController(title: "Alert" , message: "You are not authorized to access this website", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+            print("User click Dismiss button")}))
+        self.present(alert, animated: true)
+    }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let url = navigationAction.request.url
@@ -82,9 +91,15 @@ class ViewController: UIViewController, WKNavigationDelegate {
                     return
                 }
                 
+                
             }
+        simpeAlert()
         }
+        
         decisionHandler(.cancel)
+        
+        
     }
+    
 }
 
